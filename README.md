@@ -42,6 +42,7 @@
 
 - `SKILL.md`: 에이전트가 개발 작업에 적용할 핵심 지침
 - `README.md`: 저장소의 목적, 설치 방식과 검증 방법을 설명하는 문서
+- `templates/`: 필요할 때 선택해 사용할 한국어 문서 양식
 
 ## 프로젝트에 설치하기
 
@@ -52,9 +53,26 @@ pwd
 git clone --depth 1 https://github.com/liminal-cipher/develop-software-skill.git /tmp/develop-software-skill
 mkdir -p .agents/skills/develop-software
 cp /tmp/develop-software-skill/SKILL.md .agents/skills/develop-software/SKILL.md
+cp -R /tmp/develop-software-skill/templates .agents/skills/develop-software/templates
 ```
 
 설치 경로와 자동 발견 동작은 사용 중인 Codex 버전·설정에 따라 확인한다. Skill이 자동으로 인식되지 않으면 현재 프로젝트의 `SKILL.md`를 명시적으로 읽고 적용하도록 요청할 수 있다. Codex 버전이나 전역 설정을 변경할 필요는 없다.
+
+
+Windows PowerShell 설치 예시:
+
+~~~powershell
+$skillSource = Join-Path $env:TEMP "develop-software-skill"
+$skillTarget = ".agents/skills/develop-software"
+
+git clone --depth 1 https://github.com/liminal-cipher/develop-software-skill.git $skillSource
+New-Item -ItemType Directory -Force $skillTarget | Out-Null
+Copy-Item (Join-Path $skillSource "SKILL.md") (Join-Path $skillTarget "SKILL.md")
+New-Item -ItemType Directory -Force (Join-Path $skillTarget "templates") | Out-Null
+Copy-Item -Path (Join-Path $skillSource "templates/*") -Destination (Join-Path $skillTarget "templates") -Recurse -Force
+~~~
+
+기존 템플릿을 직접 수정해 사용 중이라면 덮어쓰기 전에 변경 내용을 보존한다. 템플릿은 선택 사항이며 프로젝트에 필요한 문서만 만든다.
 
 ## 확인할 동작
 
