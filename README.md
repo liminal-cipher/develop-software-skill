@@ -48,20 +48,28 @@
 
 ## 구성
 
-- `SKILL.md`: 에이전트가 개발 작업에 적용할 핵심 지침
+- `SKILL.md`: 영어로 작성한 에이전트 개발 지침. 기본 대화·작업 문서 언어는 한국어로 유지한다.
 - `README.md`: 저장소의 목적, 설치 방식과 검증 방법을 설명하는 문서
 - `templates/`: 필요할 때 선택해 사용할 한국어 문서 양식
 
+이 저장소가 `develop-software`의 원본이다. 다른 저장소에 별도 편집본을 두지 않고,
+설치본은 이 저장소의 선택한 버전에서 가져온다. 스킬을 수정할 때는 원본 저장소에서
+수정·검증한 뒤 게시하고, 사용하는 환경의 설치본을 갱신한다.
+
 ## 프로젝트에 설치하기
 
-플랫폼에서 공개 Git 저장소 사용이 허용된 경우의 예시다. 프로젝트 루트를 확인한 뒤 해당 위치에서 실행한다.
+플랫폼에서 공개 Git 저장소 사용이 허용된 경우의 최초 설치 예시다. 프로젝트 루트를
+확인한 뒤 해당 위치에서 실행한다. 원본은 프로젝트 옆의 `develop-software-skill`
+폴더에 보관한다. 이미 원본을 복제했다면 다시 복제하지 않고 그 경로를 사용한다.
+기존 설치본이 있으면 직접 변경한 내용부터 원본과 비교하고 보존한 뒤 갱신한다.
 
 ```bash
 pwd
-git clone --depth 1 https://github.com/liminal-cipher/develop-software-skill.git /tmp/develop-software-skill
+test ! -e .agents/skills/develop-software || exit 1
+git clone --depth 1 https://github.com/liminal-cipher/develop-software-skill.git ../develop-software-skill || exit 1
 mkdir -p .agents/skills/develop-software
-cp /tmp/develop-software-skill/SKILL.md .agents/skills/develop-software/SKILL.md
-cp -R /tmp/develop-software-skill/templates .agents/skills/develop-software/templates
+cp ../develop-software-skill/SKILL.md .agents/skills/develop-software/SKILL.md
+cp -R ../develop-software-skill/templates .agents/skills/develop-software/templates
 ```
 
 설치 경로와 자동 발견 동작은 사용 중인 Codex 버전·설정에 따라 확인한다. Skill이 자동으로 인식되지 않으면 현재 프로젝트의 `SKILL.md`를 명시적으로 읽고 적용하도록 요청할 수 있다. Codex 버전이나 전역 설정을 변경할 필요는 없다.
@@ -70,10 +78,12 @@ cp -R /tmp/develop-software-skill/templates .agents/skills/develop-software/temp
 Windows PowerShell 설치 예시:
 
 ~~~powershell
-$skillSource = Join-Path $env:TEMP "develop-software-skill"
+$skillSource = "../develop-software-skill"
 $skillTarget = ".agents/skills/develop-software"
 
+if (Test-Path -LiteralPath $skillTarget) { throw "기존 설치본의 변경 내용을 먼저 확인한다." }
 git clone --depth 1 https://github.com/liminal-cipher/develop-software-skill.git $skillSource
+if ($LASTEXITCODE -ne 0) { throw "원본 저장소를 복제하지 못했다." }
 New-Item -ItemType Directory -Force $skillTarget | Out-Null
 Copy-Item (Join-Path $skillSource "SKILL.md") (Join-Path $skillTarget "SKILL.md")
 New-Item -ItemType Directory -Force (Join-Path $skillTarget "templates") | Out-Null
