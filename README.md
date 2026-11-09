@@ -81,7 +81,6 @@ test -e AGENTS.md || cp ../develop-software-skill/templates/AGENTS.md AGENTS.md
 
 설치 경로와 자동 발견 동작은 사용 중인 Codex 버전·설정에 따라 확인한다. Codex 버전이나 전역 설정을 변경할 필요는 없다. 프로젝트 루트의 `AGENTS.md`는 Skill이 자동으로 인식되지 않을 때도 핵심 규칙과 `SKILL.md` 경로를 전달하는 진입점이다. 위 명령은 `AGENTS.md`가 없을 때만 복사한다. 이미 있으면 덮어쓰지 말고 `templates/AGENTS.md`의 내용을 기존 파일 끝에 직접 추가한다.
 
-
 Windows PowerShell 설치 예시:
 
 ~~~powershell
