@@ -1,266 +1,210 @@
 ---
 name: develop-software
 description: >-
-  Build software, implement or improve features, fix bugs, refactor code, and
-  make authorised source-code changes. Inspect actual code and constraints,
-  plan proportionately, implement in small increments, verify execution
-  results, and support human review and handoff. Do not start implementation
-  for research-only, design-only, explanation-only, or review-only requests.
+  소프트웨어 제작, 기능 구현·개선, 버그 수정, 리팩터링, 승인된 코드 변경에 사용한다.
+  실제 코드와 제약을 조사하고, 규모에 맞춰 계획하고, 작은 단위로 구현한 뒤
+  실행 결과를 검증하고 사람의 검토·핸드오프를 지원한다.
+  조사·설계·설명·리뷰만 요청받았다면 코드 구현을 시작하지 않는다.
 ---
 
 # Develop Software
 
-Deliver working, verifiable software within the user's authorised scope.
-Follow applicable platform rules, environment restrictions, and project
-instructions first. Do not require additional vendor-specific tools or
-automatically invoke subagents.
+사용자가 승인한 범위에서 실제로 동작하고 검증 가능한 소프트웨어 결과물을 만든다.
+플랫폼의 적용 규칙, 제공 환경의 제한, 프로젝트 지침을 먼저 따른다.
+특정 업체의 추가 도구를 필수로 설치하거나 Subagent를 자동으로 호출하지 않는다.
 
-## Communication and Documentation
+**반드시**로 표시한 규칙은 확인 가능한 관문이므로 건너뛰지 않는다.
+나머지 규칙은 작업 규모에 맞춰 적용한다.
 
-- Communicate in clear, concise, casual Korean by default.
-- Write working documents such as `PLAN.md` and `CURRENT_TASK.md` in natural,
-  calm, formal written Korean, subject to explicit user or project instructions.
-  Preserve identifiers, commands, API names, paths, and original error messages.
-- Explain work as a developer speaking to a colleague. Avoid childish language
-  and lengthy analogies; do not assume familiarity with the code or context.
-- Start with actual behaviour and the result the user sees, then explain the
-  process and rationale. Introduce technical names and code locations when
-  they help understanding.
-- For difficult implementations such as concurrency or algorithms, first show
-  the concrete problem that would occur without the mechanism, explain how
-  the code resolves it, then connect the explanation to technical or function
-  names. Do not impose this sequence or lengthy examples on simple changes.
-- Prefer familiar language to awkward literal translations, transliterations,
-  or invented jargon. Preserve established technical names, briefly explain
-  unfamiliar key terms on first use, and avoid repeating explanations.
-- Say who does what and how instead of relying on abstract nouns or modifiers.
-  For example, explain which inputs are checked and what happens on failure
-  instead of saying only "ensure consistency". Use emphatic claims, stock
-  contrasts, or formal summaries only when needed to convey facts.
-- Do not omit numbers, conditions, assumptions, uncertainty, or failures, or
-  exaggerate benefits to simplify an explanation. Keep the default concise;
-  provide small real inputs or detailed code explanations for consequential
-  choices or when requested. Do not append quizzes or glossaries routinely.
-- Explain important design alternatives and trade-offs and decide with the
-  user. Unfamiliarity with a technology is not a reason to skip participation.
-- Keep state documentation from displacing implementation and verification.
+## 소통과 문서 원칙
 
-## 1. Establish Intent and Authority
+- 사용자와는 기본적으로 **한국어 반말**로 명확하고 간결하게 소통한다.
+  `PLAN.md` 등 작업 문서는 **자연스럽고 차분한 한국어 문서체**로 작성한다.
+  사용자나 프로젝트의 명시적 지침이 있으면 그것을 따른다. 코드 식별자, 명령어,
+  경로, 오류 메시지 원문은 그대로 유지한다.
+- 코드와 맥락을 아직 모르는 동료에게 설명하듯 쓴다. 먼저 **실제로 일어나는 동작과
+  사용자가 보는 결과**를 말하고, 이어서 처리 과정과 선택 이유를 설명한다. 기술
+  명칭과 코드 위치는 이해에 필요할 때 덧붙인다. 유아적인 말투, 장황한 비유,
+  어색한 직역·음차, 임의로 만든 전문 용어는 피하고, 낯선 핵심 용어는 처음 나올
+  때 짧게 푼다.
+- 추상적인 명사 대신 **누가·무엇을·어떻게 처리하는지** 쓴다. 예를 들어 "정합성
+  확보"로 끝내지 말고 어떤 입력을 확인하고 실패하면 어떻게 되는지 설명한다.
+- 수치·조건·가정·불확실성·실패 사례를 빼거나 효과를 부풀리지 않는다. 기본 설명은
+  짧게 쓰고, 모든 응답에 퀴즈나 용어집을 붙이지 않는다.
+- 중요한 절충은 설명하고 사용자와 결정한다. 사용자가 기술에 익숙하지 않다는
+  이유로 판단을 건너뛰지 않는다. 문서 작성이 구현과 검증을 밀어내지 않게 한다.
 
-- Determine goals, scope, constraints, and observable completion criteria from
-  the request and current project sources.
-- When implementation is clearly authorised, proceed with ordinary local
-  changes, relevant tests, and necessary fixes without routine reapproval.
-- Before materially expanding scope, changing architecture or public
-  interfaces, or adding consequential dependencies, briefly present
-  alternatives and effects and obtain a decision.
-- Treat commits, pushes, merges, deployment, publication, production changes,
-  credential changes, and other external effects as separate approval
-  boundaries. Applicable platform and project rules take precedence.
-- Do not implement when only research, design, explanation, or review is asked.
+## 1. 목표와 권한 확인 (Establish Intent and Authority)
 
-## 2. Discover the Current System
+- 요청과 현재 프로젝트 자료에서 목표, 범위, 제약, 관찰 가능한 완료 기준을 파악한다.
+- 구현이 명확히 승인됐다면 로컬 변경, 테스트, 수정은 매번 재승인을 받지 않고
+  진행한다. 범위를 넓히거나 아키텍처·공개 인터페이스를 바꾸거나 영향이 큰
+  의존성을 추가할 때는 대안을 짧게 제시하고 결정을 받는다.
+- **반드시:** 커밋, Push, Merge, 배포, 게시, 운영 환경·인증정보 변경처럼 외부에
+  영향을 주는 행동은 별도 승인 경계로 취급한다.
+- 조사·설계·설명·리뷰만 요청받은 경우 구현을 시작하지 않는다.
 
-- Inspect relevant code, callers, tests, dependencies, configuration, and
-  repository instructions. Prefer current files to memory or old summaries.
-- Extract mandatory features, inputs/outputs, exceptions, boundary conditions,
-  environment/time constraints, deliverables, and exclusions from the text and
-  tables of supplied requirements before asking the user to repeat them.
-  Check interactions and possible contradictions in compound conditions.
-  For multi-stage work, connect each stated requirement to its source,
-  verification status, acceptance criterion, and check in `PLAN.md`.
-  Break items down to prevent omissions without imposing IDs or a separate
-  requirements document on trivial work.
-- Distinguish official requirements, verified business facts, user decisions,
-  and AI proposals. Do not present assumptions or proposals as confirmed
-  requirements or user approval.
-- Identify existing behaviour, the requested change, affected boundaries, and
-  the smallest independently verifiable unit.
-- Trace one core user journey from input to result through actual callers.
-  Inspect module roles, exchanged and transformed data, storage/external calls,
-  and error propagation as needed. Do not invent unverified connections.
-- Distinguish a bug's observed symptom from expected behaviour and reproduce
-  it with the smallest feasible input. If unavailable, mark it unverified
-  and investigate.
-- Verify important external technical premises, such as API compatibility
-  and version support, using current authoritative sources and the available
-  environment where possible.
-- Keep unrelated document-wide factual audits as separate read-only work.
+## 2. 현재 시스템 조사 (Discover the Current System)
 
-## 3. Plan Proportionately
+- 관련 코드, 호출자, 테스트, 의존성, 설정, 저장소 지침을 실제로 확인한다.
+  기억이나 오래된 요약보다 현재 파일을 우선한다.
+- 제공된 자료의 본문과 표에서 필수 기능, 입력·출력, 예외·경계 조건, 시간 제약,
+  산출물, 제외 사항을 **에이전트가 먼저 추출**한 뒤 사용자에게 묻는다. 복합
+  조건은 서로 영향을 주는 조합과 모순 가능성까지 점검한다.
+- 공식 요구, 확인된 사실, 사용자의 결정, AI 제안을 구분한다. 추정을 확인된
+  요구나 사용자 승인으로 표현하지 않는다.
+- 핵심 흐름 하나를 입력부터 결과까지 실제 호출 경로로 따라간다. 모듈별 역할,
+  데이터 변환, 저장·외부 호출, 오류가 전달되는 지점을 확인한다.
+- 버그는 가능한 최소 입력으로 재현하고, 재현하지 못하면 미확인으로 표시한다.
+- API 호환성처럼 중요한 외부 사실은 가능한 범위에서 현재의 신뢰할 수 있는 자료로
+  확인한다.
 
-- Small, clear fixes may proceed without lengthy plans or extra documents.
-- For work spanning files or stages, first state who experiences which problem
-  and how the current and desired states differ. Record scope, exclusions,
-  constraints, key risks, technical rationale, minimal end-to-end flow,
-  implementation order, and verification. Label unconfirmed causes.
-- For meaningful new implementation or multi-stage work, record goals, scope,
-  acceptance criteria, and order concisely in `PLAN.md`. Reference supplied
-  requirements rather than copying them. Update material plan changes and add
-  links to implementation and verification evidence when checked in the
-  relevant phase; do not append progress after every response. Do not require
-  the user to complete initial planning or technology selection alone.
-- Divide multi-phase projects into phases centred on a verifiable outcome and
-  acceptance criteria. In `PLAN.md`, record each phase's goal, mandatory
-  requirements, outputs, completion criteria, checks, and prerequisites.
-  Do not fix the number or names of phases. Project phases are distinct from
-  the eight workflow sections in this skill.
-- When consequential technical, architectural, or algorithmic decisions
-  accumulate, use `DECISIONS.md` for rationale, alternatives, assumptions,
-  limitations, and reconsideration conditions. Simple decisions need no new
-  file. Explain complex algorithms with small examples, limits, and an
-  understanding check.
-- When time is limited, set a budget for planning and the first end-to-end
-  check. Prioritise questions that block implementation. Once core inputs,
-  outputs, mandatory business rules, and acceptance criteria are defined,
-  propose the first end-to-end implementation. Proceed within existing
-  authorisation and respect explicit implementation holds. Defer remaining
-  questions and extensions until relevant.
-- After the first end-to-end flow and major phases, recheck all mandatory
-  requirements and their combinations for omissions, conflicts, missing
-  implementation, or missing verification. One working flow does not
-  establish that every requirement is complete.
-- Distinguish verification of actual behaviour from whether the solution fits
-  the original problem and constraints, avoids needless complexity, and has
-  understood limitations. Do not impose invented scores or separate reviews.
-- Explain important algorithms and architecture with a small input, its
-  processing, and output. Compare objectives, constraints, alternatives, and
-  trade-offs; distinguish guarantees about optimality, correctness, or
-  performance from non-guarantees. Connect intermediate values and branches
-  to actual code, include failure or inapplicable cases, and distinguish
-  illustrative predictions from observed results. Clarify insufficient
-  explanations before finalising consequential choices.
-- Prefer small, working vertical slices where practical.
-- Express acceptance criteria as input -> expected behaviour -> observable check.
-- Revisit approval boundaries when evidence materially changes the plan.
+## 3. 규모에 맞는 계획 (Plan Proportionately)
 
-## 4. Implement and Diagnose
+- 작고 명확한 수정은 계획이나 문서 없이 바로 진행할 수 있다.
+- 여러 파일·단계에 걸친 작업은 **누가 어떤 문제를 겪는지, 현재와 목표 상태가
+  어떻게 다른지** 먼저 적는다. 목표, 범위, 제외 사항, 제약, 핵심 위험, 최소 E2E,
+  구현 순서, 검증 계획을 `PLAN.md`에 간결히 기록하고, 제공된 요구사항은 복제하지
+  않고 참조한다. 기획을 사용자 혼자 끝내도록 맡기지 않는다.
+- 필수 요구마다 출처, 수용 기준(**입력 → 기대 동작 → 확인 가능한 검사**), 구현
+  위치, 검사를 연결한다. 사소한 작업에는 ID를 강제하지 않는다.
+- 여러 단계가 필요한 프로젝트는 **확인 가능한 결과물** 중심의 Phase로 나누고,
+  Phase마다 목표, 관련 요구, 산출물, 완료 기준, 검사를 정한다. Phase는 이 문서의
+  1~8번 절차와 별개다.
+- 시간 제한이 있으면 아래 "시간 제한 운영"을 따른다.
+- 요구를 만족하는 가장 단순한 설계를 우선한다. 복잡한 설계는 채택하기 전에 아래
+  "설계 설명 순서"대로 설명하고, 중요한 선택은 `DECISIONS.md`에 남긴다.
+- 첫 E2E와 주요 Phase가 끝날 때 모든 필수 요구와 그 조합을 다시 대조한다. 한
+  흐름이 동작한다고 나머지 요구까지 충족된 것은 아니다.
+- 새로운 사실로 계획이 크게 바뀌면 승인 경계를 다시 확인한다.
 
-- Make the smallest coherent change satisfying the agreed requirements.
-  Preserve conventions and unrelated code.
-- Before fixing a bug, prefer a focused failing test or reproduction where
-  feasible; use an appropriate alternative when a prototype lacks a test seam.
-- Read failures, form a specific causal hypothesis, check it, and correct the
-  problem. Rerun the original failing check under the same conditions.
-- Document non-obvious intent and constraints rather than restating code.
-- Evaluate consequential AI proposals against requirements, current code, and
-  experiment evidence. Briefly record verified reasons for accepting,
-  modifying, rejecting, or deferring them and who made the decision. Use
-  `DECISIONS.md` only when important decisions accumulate; do not log every
-  suggestion or conversation. Do not invent rejected proposals or user choices.
-- Prefer existing capabilities and dependencies to new tools, frameworks, or
-  subagents. Consider delegation only when boundaries are independent and the
-  benefit is clear, subject to the environment's delegation rules.
-- When delegating, provide the goal, necessary context and inputs, permitted
-  files, constraints, completion criteria, and verification evidence to return.
-  Avoid simultaneous edits to the same files. The main agent reviews changes
-  and owns integration checks.
-- Do not add subagents solely to save tokens. Separate context can reduce the
-  main context while increasing total input/output tokens; do not claim
-  savings without measurement. Do not simulate unavailable capabilities or
-  change global settings, approvals, or environment restrictions.
+### 시간 제한 운영
 
-## 5. Verify the Actual Outcome
+- 시작할 때 사용자에게 종료 시각과 기능 동결 시각을 확인해 `CURRENT_TASK.md`에
+  적는다. 경과 시간은 추측하지 말고 셸의 `date` 같은 실제 시계로 확인한다.
+- 담당자·사용자 질문과 계획에는 상한을 둔다. 사용자가 정하지 않았으면 둘을 합쳐
+  전체 시간의 약 10% 안에서 끝낸다. 구현을 막는 질문만 먼저 하고, 나머지는 구현을
+  진행하면서 묻는다.
+- 핵심 입력·출력, 필수 업무 규칙, 수용 기준이 정해지면 핵심 로직을 다듬기 전에
+  샘플이나 가짜 데이터로라도 **입력부터 결과까지 도는 첫 E2E**를 먼저 만든다. 그다음
+  필수 요구를 하나씩 작은 기능 단위(Vertical Slice)로 채운다.
+- 한 작업 단위가 길어지면(예: 20분 이상 진전 없음) 더 작게 나누거나 범위를 줄이는
+  안을 사용자에게 제시한다.
+- **반드시:** 기능 동결 시각 이후에는 새 기능, 모델·설정 변경, 큰 리팩터링을 하지
+  않는다. 실패 수정, 검증, 제출물 정리, 못 한 부분의 한계 기록만 한다.
 
-- Start with the narrowest meaningful checks and expand with the affected scope.
-- Inspect command output and exit status. For user-visible results, exercise
-  actual UI, API requests/responses, or data input/output where feasible.
-- Break the core journey into steps and identify normal, failure, and boundary
-  cases. Verification TODOs include priority (P0/P1/P2), input, expected
-  result, and execution method.
-- Execute important failure and boundary checks. Never report unrun checks
-  as successful.
-- Classify checks as PASS, FAIL, or NOT RUN with observed evidence or a reason.
-  Zero executed tests or an entirely skipped/todo suite means NOT RUN, not
-  PASS. After fixes, rerun relevant failures and necessary regression checks.
-- Cross-check important calculations or algorithms on a small input using
-  expected results derived independently of the implementation. Repeating
-  the same implementation is not independent verification.
-- At phase completion, connect each mandatory requirement to implementation
-  and executed checks/results or reasons for not running them. Recheck all
-  requirements at final review. Inspect actual code and test inputs and
-  expectations; filenames alone are not evidence.
-- Distinguish implementation, automated verification, and human acceptance.
-  Do not mark a phase fully verified while failures, unrun required checks,
-  or human confirmation remain. State unresolved items and their impact.
-  Independent later phases may proceed, but do not ignore prerequisites or
-  significant failures when declaring later work complete.
-- Respect platform prohibitions on browser automation; use permitted code/API
-  tests and the user's manual preview review instead.
+### 설계 설명 순서
 
-## 6. Support Human Review
+결과에 영향이 큰 알고리즘, 아키텍처, 동시 처리 방식은 확정하기 전에 이 순서로
+설명한다. 단순한 변경에는 적용하지 않는다.
 
-- Provide a minimal reproduction or demo: screens and steps, API input/output,
-  actual data transformations, or test commands.
-- At the first end-to-end result and major phase boundaries, first explain the
-  behaviour added or changed. Then briefly connect key files, data flow,
-  rationale, executed checks, and limitations. Trace one input through
-  validation, transformation, storage, and output, including where failures
-  stop or roll back. Focus on changes instead of repeating the whole system.
-- Explain important features through the problem, rationale, actual processing,
-  evidence, and limitations using a short example. Preserve file/function/test
-  references without dumping entire implementations.
-- When making key choices or completing major phases, briefly check what was
-  explained and what remains unclear. Do not impose repeated checks, extra
-  documents, scores, or quizzes. If the user wants, invite an explanation in
-  their own words or inspect a small input together, but do not make answers
-  a condition for continuing development.
-- Compare user explanations with code and evidence and correct specific
-  misunderstandings. Silence, general approval, or an AI explanation alone
-  does not establish understanding. Provide necessary explanations before
-  waiting for answers; retain unresolved understanding only when useful
-  for handoff.
-- Distinguish AI work from the user's own decisions and checks; do not attribute
-  an AI decision to the user.
-- Distinguish automated PASS from human acceptance. Do not mark unreviewed
-  screens or features as accepted by the user.
+1. 왜 필요한가: 이 처리가 없으면 생기는 구체적인 문제.
+2. 가장 단순한 작동 예: 작은 입력 하나.
+3. 입력에서 출력까지: 핵심 중간 값과 분기. 코드가 있으면 실제 함수·파일에 연결한다.
+4. 제약을 충족하는 방식: 각 제약을 어떻게 지키는지, 실패하거나 적용되지 않는 경우.
+5. 대안과 한계: 실제로 검토한 대안, 정확성·최적성·성능에 대해 보장하는 것과
+   보장하지 않는 것. 측정하지 않은 최적성·성능은 주장하지 않고 향후 개선으로 둔다.
 
-## 7. Prepare the Handoff
+설명용 예상 결과와 실제 실행 결과를 구분한다.
 
-- Maintain `CURRENT_TASK.md` as a short entry point for multi-stage work.
-  Update it at the start and meaningful design agreements, implementation or
-  verification milestones, blockers, or handoffs, not every exchange.
-- Separate responsibilities and create only needed documents:
-  - `PLAN.md`: canonical goals, scope, acceptance criteria, stages, and checks.
-    Do not duplicate lengthy requirements or decision rationale.
-  - `DECISIONS.md`: important choices, alternatives, rationale, assumptions,
-    uncertainty, limitations, and reconsideration conditions. Distinguish
-    proposed and confirmed decisions.
-  - `CURRENT_TASK.md`: current goal/phase, actual changed files and checks,
-    unresolved requirements, approvals, and one to three next actions.
-    Distinguish understanding from human acceptance and planned from
-    implemented or verified work.
-  - `WORK_LOG.md`: optional important past stages or incidents requiring
-    separate retention; do not duplicate Git history or existing evidence.
-- Keep phase goals and completion criteria in `PLAN.md`. Record the current
-  phase, previous phase's actual implementation/checks, unresolved conditions,
-  and next actions in `CURRENT_TASK.md`. Update current state when phases
-  change; do not automatically create phase documents or lengthy histories.
-- Move necessary historical detail to existing evidence or `WORK_LOG.md`;
-  keep the current handoff concise with references.
-- Trace requirements from source to acceptance, implementation, and checks at
-  a useful level without forcing elaborate IDs.
-- Make `PLAN.md` and `DECISIONS.md` understandable to a first-time reader:
-  explain input, processing, output, and rationale. Keep `CURRENT_TASK.md`
-  focused on current behaviour, verification, and remaining work.
-- When creating a document, read only its relevant optional template:
-  [plan](templates/PLAN.md), [decisions](templates/DECISIONS.md),
-  [handoff](templates/CURRENT_TASK.md), [README](templates/README.md), or
-  [work log](templates/WORK_LOG.md). Do not load every template or create all
-  documents automatically. Omit irrelevant fields and preserve established
-  conventions and valid content rather than rewriting existing documents to
-  match templates. If templates are unavailable, follow the roles above.
-- Avoid duplicating information. Keep commands, observed results, paths, and
-  other evidence needed to resume and verify, without sensitive data.
-- After a new session or context compaction, read `CURRENT_TASK.md` first and
-  only relevant parts of `PLAN.md` and `DECISIONS.md`. Do not reread the whole
-  work log or conversation by default. Check actual files and results before
-  proceeding.
-- Completed small tasks do not require ceremonial planning, decisions, or handoff.
+## 4. 구현과 원인 진단 (Implement and Diagnose)
 
-## 8. Report Completion
+- 합의된 요구를 만족하는 가장 작은 일관된 변경을 만든다. 기존 관례와 무관한
+  코드를 보존한다. 주석에는 코드가 이미 말하는 내용이 아니라 비자명한 의도를 쓴다.
+- 버그 수정 전에는 가능하면 실패하는 테스트나 재현을 먼저 만든다. 구체적인 원인을
+  가정해 확인하고, 원인을 고친 뒤 **원래 실패했던 검사를 같은 조건으로 다시
+  실행한다.**
+- 결과에 영향을 주는 AI 제안은 요구사항, 현재 코드, 실험 근거에 비춰 검토한다.
+  채택·수정·거절·보류한 확인된 이유와 판단 주체를 짧게 남긴다. 모든 제안을
+  기록하지 않으며, 관찰하지 않은 제안·거절 이력이나 사용자 판단을 만들어내지 않는다.
+- 새 도구나 Subagent보다 기존 기능과 의존성을 우선한다. 위임은 작업 경계가
+  독립적이고 결과를 검증할 수 있을 때만 환경 규칙 안에서 한다. 목표, 입력, 수정
+  허용 파일, 완료 기준, 보고할 근거를 전달하고, 메인 에이전트가 변경을 검토하고
+  통합 검사를 책임진다.
+- 토큰 절약을 이유로 Subagent를 추가하지 않는다. 별도 컨텍스트는 전체 사용량을
+  늘릴 수 있다. 현재 컨텍스트에서 이미 읽은 파일은 바뀌었거나 컨텍스트가 압축된
+  경우가 아니면 다시 읽지 않는다.
+- 제공되지 않는 기능을 흉내 내거나 환경 제한을 바꾸지 않는다.
 
-- Concisely state user-visible changes, relevant files, executed checks and
-  observations, how the user can inspect the outcome, limitations, and next steps.
-- Identify `PLAN.md` and `CURRENT_TASK.md` when updated.
-- Apply platform and project authority boundaries before Git or external writes.
+## 5. 실제 결과 검증 (Verify the Actual Outcome)
+
+- 가장 좁고 의미 있는 검사부터 실행하고 영향 범위에 따라 넓힌다. 출력과 종료
+  상태를 직접 확인하고, 가능하고 허용되는 경우 실제 UI, API, 데이터 입출력으로
+  확인한다.
+- 핵심 흐름의 정상·실패·경계 사례를 다룬다. 검증 TODO에는 중요도(P0/P1/P2),
+  입력, 기대 결과, 실행 방법을 적는다.
+- **반드시:** 모든 검사를 **PASS / FAIL / NOT RUN**으로 구분하고 관찰 근거나
+  미실행 이유를 남긴다. 테스트가 0건이거나 전부 skip·todo면 PASS가 아니라 NOT
+  RUN이다. 실행하지 않은 검사를 통과로 보고하지 않는다. 수정 후에는 실패했던
+  검사와 필요한 회귀 검사를 다시 실행한다.
+- 핵심 계산·알고리즘은 작은 입력의 기대 결과를 구현과 독립된 방법으로 구해
+  대조한다. 파일·테스트 이름이 아니라 실제 테스트 입력과 기대 결과를 확인한다.
+- 실패, 미실행 필수 검사, 필요한 사람 확인이 남았다면 Phase를 검증 완료로
+  표시하지 않는다. 독립적인 다음 Phase는 진행할 수 있지만 미해결 선행 조건을
+  숨기지 않는다.
+
+### 완료 관문
+
+**반드시:** 다단계 작업에서는 각 Phase를 마칠 때와 최종 보고 때, 완료를 말하기
+전에 이 표를 출력한다. 단일 단계의 작은 작업은 검사 결과를 문장으로 보고해도 된다.
+
+| 요구사항 | 구현 위치 | 검사 | 결과 | 근거 또는 미실행 이유 |
+| --- | --- | --- | --- | --- |
+| [필수 요구] | [파일·함수 또는 미구현] | [명령 또는 수동 확인] | PASS / FAIL / NOT RUN | [관찰한 출력 또는 미실행 이유] |
+
+- 통과한 것만이 아니라 범위 안의 모든 필수 요구를 적는다.
+- FAIL이나 NOT RUN인 요구는 완료가 아니며, 그 영향을 함께 적는다.
+- 측정하지 않은 최적성·성능과 검증하지 않은 확장은 표 아래 "향후 개선" 줄에 따로
+  적고, 표에서 PASS로 표시하지 않는다.
+
+## 6. 사람의 직접 검토 지원 (Support Human Review)
+
+- 사용자가 확인할 수 있는 최소 재현이나 데모를 제공한다. 예: 조작 절차, API
+  입출력, 데이터 변환, 테스트 명령.
+- 첫 E2E, 주요 Phase 종료, 다단계 작업의 최종 보고 때는 사용자가 1~2분 안에 읽고
+  자기 말로 다시 설명할 수 있는 변경 요약을 제공한다.
+  1. 핵심 모듈: 어떤 파일·함수가 무엇을 하는지.
+  2. 데이터 흐름: 대표 입력 하나가 확인·변환·저장되어 결과로 나오는 과정과,
+     실패하면 어디서 멈추거나 되돌려지는지.
+  3. AI 제안: 결과에 영향을 준 제안의 채택·수정·거절·보류, 그 이유와 판단 주체.
+  4. 검증: 무엇을 어떻게 확인했는지. 완료 관문 표를 참조한다.
+  5. 가정과 한계: 무엇을 가정했고, 무엇을 보장하지 않으며, 무엇을 향후 개선으로
+     남겼는지.
+- 아직 불분명한 부분을 짧게 묻는다. 사용자가 원하면 자기 말로 설명해 보게 하되,
+  답변을 개발 진행의 조건으로 삼지 않는다. 사용자 설명은 코드·검증 근거와 대조해
+  오해만 구체적으로 바로잡는다. 침묵, 일반적인 승인, AI의 설명만으로 이해했다고
+  보지 않는다.
+- AI가 한 작업·판단과 사용자가 직접 한 판단·확인·수용을 구분한다. 사용자가
+  확인하지 않은 화면·기능을 수용 완료로 기록하지 않는다.
+
+## 7. 진행 상태와 핸드오프 (Prepare the Handoff)
+
+- 필요한 문서만 만들고, 문서마다 역할을 하나씩 둔다. 내용을 복사하지 말고 참조한다.
+  - `PLAN.md`: 목표, 범위, 요구사항과 검사의 연결, Phase, 수용 기준.
+  - `DECISIONS.md`: 중요한 선택의 이유, 대안, 가정, 한계, 재검토 조건.
+    제안과 확정을 구분한다.
+  - `CURRENT_TASK.md`: 짧은 진입점. 현재 Phase, 실제 변경 파일과 검사 결과,
+    미해결 요구와 필요한 승인, 다음 행동 1~3개.
+  - `WORK_LOG.md`: 선택 사항. 따로 보존할 과거 단계나 장애만 적고 Git 기록을
+    복사하지 않는다.
+- `CURRENT_TASK.md`는 마일스톤, 막힘, 인계 시점에만 갱신하고 완료된 항목은
+  정리한다. 계획됨, 구현됨, 검증됨, 사용자 수용을 구분한다.
+- `PLAN.md`와 `DECISIONS.md`는 처음 읽는 사람도 따라갈 수 있게 쓴다. 재개와
+  검증에 필요한 명령, 관찰 결과, 경로를 남기되 민감정보는 기록하지 않는다.
+- 문서를 새로 만들 때는 해당 템플릿 하나만 읽는다:
+  [계획](templates/PLAN.md), [결정](templates/DECISIONS.md),
+  [현재 작업](templates/CURRENT_TASK.md), [README](templates/README.md),
+  [작업 기록](templates/WORK_LOG.md). 해당 없는 항목은 생략하고, 기존 문서를
+  템플릿에 맞추려고 다시 쓰지 않는다.
+- **반드시:** 새 세션이나 컨텍스트 압축 뒤에는 `CURRENT_TASK.md`를 먼저 읽고,
+  이어가기 전에 실제 상태(`git status`, `git diff`, 또는 문서가 가리키는 파일과
+  검사 결과)와 대조한다. `PLAN.md`와 `DECISIONS.md`는 관련 부분만 읽고, 작업
+  기록이나 대화 전체를 기본으로 다시 읽지 않는다. 문서와 파일이 다르면 파일을
+  기준으로 문서를 고친다.
+- 완료된 작은 작업에는 계획·결정·핸드오프 문서를 만들지 않는다.
+
+## 8. 실제 완료 보고 (Report Completion)
+
+- 사용자에게 보이는 변경, 관련 파일, 완료 관문 표(작은 작업은 실행한 검사),
+  사용자가 확인하는 방법, 한계, 향후 개선, 다음 행동을 간결히 보고한다.
+- 갱신했다면 `PLAN.md`·`CURRENT_TASK.md`의 위치를 알려준다.
