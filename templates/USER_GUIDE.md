@@ -8,11 +8,13 @@
 
 ```bash
 ls AGENTS.md .agents/skills/develop-software
-date; TZ=Asia/Seoul date
+date; TZ=KST-9 date
 ```
 
 - 두 시각이 다르면 실행 환경의 시간대가 다르다는 뜻이다. 에이전트에게 시각은
-  `TZ=Asia/Seoul date`처럼 내 시간대로 보라고 말한다(내 시간대에 맞게 바꾼다).
+  `TZ=KST-9 date`처럼 내 시간대로 보라고 말한다. `KST-9`는 "UTC보다 9시간 빠름"을
+  뜻하는 POSIX 형식이라 시간대 데이터가 없는 환경에서도 동작한다. `Asia/Seoul`
+  같은 이름은 그런 환경에서 조용히 UTC로 찍힐 수 있다. 내 시간대에 맞게 바꾼다.
 - 커밋 기준점이 필요하면 `git init`(이미 Git이면 생략) 뒤 설치 직후 상태를 로컬에
   커밋해 둔다. 원격 저장소로 보내는 것이 막힌 환경이면 push는 하지 않는다.
 
